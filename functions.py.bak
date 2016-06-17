@@ -41,7 +41,7 @@ def noise_calculator(cube,hdr_map,in_par):
   
   std=numpy.std(cube,0)
   line_noise=numpy.median(std[numpy.where((abs(flux_line/flux_out-1)<in_par['NOISE_PERC']))])
-  print('Line noise: ',line_noise)
+  print 'Line noise: ',line_noise
   if in_par['CONT_COR']:
     cube=cube-line_noise
     if in_par['CONT_OUT']:
@@ -115,7 +115,7 @@ def get_pars(profile_i,num_zeros,v_res):#obtain the estimated parameters for the
 
 def fix_primpars(params,minpars,maxpars,fit_params,num_zeros2,ind_max,v_res):#add the main peak parameters for the second pass, and if it has been detected, correct them
   vels=[params[index] for index in numpy.arange(1,len(params),3)]
-  prin_index=min(list(range(len(vels))), key=lambda k: abs(vels[k]-fit_params[3*ind_max+1]))
+  prin_index=min(range(len(vels)), key=lambda k: abs(vels[k]-fit_params[3*ind_max+1]))
   if abs(vels[prin_index]-fit_params[3*ind_max+1])<2.*v_res:
     num_zeros=num_zeros2
     params[3*prin_index:3*prin_index+3]=fit_params[3*ind_max:3*ind_max+3]#we impose the initial parameters of the main peak as the result of the previous fit
@@ -241,14 +241,14 @@ def vel_profile(hdr,sizez,in_par):#produce a velocity profile from the spectral 
 
   if in_par['Z_TYPE'] == 0:
     if hdr['CTYPE3'] != 'VELOCITY':
-      print('The spectral direction is not in velocity. Check cube and parameter file to ensure all is correct')
-      print('The z-direction is in', hdr['CTYPE3'], hdr['CUNIT3'])
+      print 'The spectral direction is not in velocity. Check cube and parameter file to ensure all is correct'
+      print 'The z-direction is in', hdr['CTYPE3'], hdr['CUNIT3']
     vel=vel*in_par['VEL_SCALE']
     v_res=vel[1]-vel[0]
   elif in_par['Z_TYPE'] == 1:
     if hdr['CTYPE3'] != 'FREQ':
-      print('The spectral direction is not in frequency. Check cube and parameter file to ensure all is correct')
-      print('The z-direction is in', hdr['CTYPE3'], hdr['CUNIT3'])
+      print 'The spectral direction is not in frequency. Check cube and parameter file to ensure all is correct'
+      print 'The z-direction is in', hdr['CTYPE3'], hdr['CUNIT3']
     c=299792.0*in_par['VEL_SCALE']
     wave_l=((c*1.e13)/(vel*in_par['FREQ_SCALE']))
     lambda0=in_par['LAMBDA_R']
@@ -256,9 +256,9 @@ def vel_profile(hdr,sizez,in_par):#produce a velocity profile from the spectral 
     v_res=vel[1]-vel[0]
   else:
     if hdr['CTYPE3'] == 'VELOCITY' or hdr['CTYPE3'] == 'FREQ':
-      print('The spectral direction is incorrectly defined. Check cube and parameter file to ensure all is correct')
-      print('The z-direction is in', hdr['CTYPE3'], hdr['CUNIT3'])
-      print('assuming z-direction in wavelength')
+      print 'The spectral direction is incorrectly defined. Check cube and parameter file to ensure all is correct'
+      print 'The z-direction is in', hdr['CTYPE3'], hdr['CUNIT3']
+      print 'assuming z-direction in wavelength'
     c=299792.0*in_par['VEL_SCALE']
     lambda0=in_par['LAMBDA_R']
     wave_l=vel*in_par['LAMBDA_SCALE']

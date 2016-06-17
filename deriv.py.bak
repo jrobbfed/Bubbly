@@ -141,17 +141,17 @@ def deriv(*positional_inputs, **keyword_inputs):
         x_in = positional_inputs[0]
         y_in = positional_inputs[1]
     else:
-        raise ValueError("deriv:  Bad inputs")
+        raise ValueError, "deriv:  Bad inputs"
 
 
     #- Establish missing and algorithm from *keyword_inputs:
 
-    if ('missing' in keyword_inputs) == 1:
+    if keyword_inputs.has_key('missing') == 1:
         missing = keyword_inputs['missing']
     else:
         missing = 1e+20
 
-    if ('algorithm' in keyword_inputs) == 1:
+    if keyword_inputs.has_key('algorithm') == 1:
         algorithm = keyword_inputs['algorithm']
     else:
         algorithm = 'default'
@@ -160,9 +160,9 @@ def deriv(*positional_inputs, **keyword_inputs):
     #- Check positional and keyword inputs for possible errors:
 
     if (len(y_in.shape) != 1) or (len(x_in.shape) != 1):
-        raise ValueError("deriv:  Inputs not a vector")
+        raise ValueError, "deriv:  Inputs not a vector"
     if type(algorithm) != type(''):
-        raise ValueError("deriv:  algorithm not str")
+        raise ValueError, "deriv:  algorithm not str"
 
 
     #- Set algorithm_to_use variable, based on the algorithm keyword.
@@ -224,7 +224,7 @@ def deriv(*positional_inputs, **keyword_inputs):
     #  * Option 2:  Bad algorithm specified:
 
     else:
-        raise ValueError("deriv:  bad algorithm")
+        raise ValueError, "deriv:  bad algorithm"
 
 
     #- Return derivative as Numeric array:

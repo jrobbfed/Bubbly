@@ -55,7 +55,7 @@ if not in_par['RERUN']:
     spec_noise=float(in_par['NOISE_S'])
     mask=mono>cutoff
   elif in_par['NOISE_DET']==1:
-    print('separating galaxy emission and calculating spectral noise')
+    print 'separating galaxy emission and calculating spectral noise'
     SNR_S=float(in_par['SNR_S'])
     cube,mask,spec_noise=noise_calculator(cube,hdr_map,in_par)
 
@@ -66,7 +66,7 @@ vel,v_res=vel_profile(cube_hdr,sizez,in_par)
 
 #proceed to multi-peak detection and fitting unless the code is rerun on the same multi maps:
 if not in_par['RERUN']:
-  print('performing peak detectiong and fitting')
+  print 'performing peak detectiong and fitting'
   #Initialize dictionaries and lists where we will store data for the calculations
   zeromap=numpy.zeros([sizex,sizey])
   vel_map=numpy.zeros([1,sizex,sizey])
@@ -140,7 +140,7 @@ if not in_par['RERUN']:
 
 #recover component maps if the program is re-run on an existing set of maps
 if in_par['RERUN']:
-  print('reading multi-peak maps')
+  print 'reading multi-peak maps'
   map_number=len(os.listdir('multiple_maps'))/3
   vel_map=numpy.zeros([map_number,sizex,sizey])
   mono_map=numpy.zeros([map_number,sizex,sizey])
@@ -158,7 +158,7 @@ if in_par['RERUN']:
   hdr_map=header_correct(hdr_prev,hdr_map)#make correct header from parameters for the multiple maps and the current parfile
 
 
-print('maximum number of peaks: ',map_number)
+print 'maximum number of peaks: ',map_number
 
 
 #We start to construct the main peak maps, we begin by assigning the values of where there is only one peak detected
@@ -182,7 +182,7 @@ if in_par['MAIN_EXT'] == 0 or in_par['MAIN_OUT'] == 1:
 	#vel_map[nmap,i,j]=0.
 	#mono_map[nmap,i,j]=0.
 	#disp_map[nmap,i,j]=0.
-  print('main peak maps produced')
+  print 'main peak maps produced'
       
 if in_par['MAIN_OUT'] == 1:
   mask0=numpy.where(main_v==0.)
@@ -200,7 +200,7 @@ if in_par['MAIN_OUT'] == 1:
 if in_par['MAIN_EXT'] == 1:
   main_v=pf.open(in_par['MAIN_NAME'])[0].data
 
-print('detecting expansion')
+print 'detecting expansion'
 veloff=numpy.array([numpy.subtract(vel_map[k,:,:],main_v) for k in numpy.arange(map_number)])
 veloff_abs=abs(veloff)
 bub=[]
@@ -269,7 +269,7 @@ for coord in bub:
       bubble_sec_int[bubsec_index,i,j]=irel
       bubble_sec_disp[bubsec_index,i,j]=b_disp
     elif voff==bubble_map[i,j]:
-      print(coord)
+      print coord
     else:
       bubsec_index=min(numpy.where(numpy.isnan(bubble_sec[:,i,j]))[0])
       bubble_sec[bubsec_index,i,j]=bubble_map[i,j]
@@ -296,7 +296,7 @@ pf.writeto('bubble_sec_disp.fits',bubble_sec_int,hdr_map,clobber=True)
 
 
 if in_par['PROF_OUT'] == 1:
-  print('outputting fitted profiles with expansion')
+  print 'outputting fitted profiles with expansion'
   try:
     os.mkdir('profiles')
   except:
