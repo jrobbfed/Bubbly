@@ -24,12 +24,10 @@
 # - See import statements throughout for non-"built-in" packages and
 #   modules required.
 #
-# Copyright (c) 2003 by Johnny Lin.  For licensing, distribution 
+# Copyright (c) 2003 by Johnny Lin.  For licensing, distribution
 # conditions, contact information, and additional documentation see
 # the URL http://www.johnny-lin.com/py_pkgs/gemath/doc/.
 #=======================================================================
-
-
 
 
 #----------------------- Overall Module Imports ------------------------
@@ -39,8 +37,6 @@
 #import gemath_version
 #__version__ = gemath_version.version
 #del gemath_version
-
-
 
 
 #---------------------- General Function:  deriv -----------------------
@@ -131,7 +127,6 @@ def deriv(*positional_inputs, **keyword_inputs):
     import numpy.ma as MA
     import numpy as N
 
-
     #- Establish y_in and x_in from *positional_inputs:
 
     if len(positional_inputs) == 1:
@@ -142,7 +137,6 @@ def deriv(*positional_inputs, **keyword_inputs):
         y_in = positional_inputs[1]
     else:
         raise ValueError("deriv:  Bad inputs")
-
 
     #- Establish missing and algorithm from *keyword_inputs:
 
@@ -156,14 +150,12 @@ def deriv(*positional_inputs, **keyword_inputs):
     else:
         algorithm = 'default'
 
-
     #- Check positional and keyword inputs for possible errors:
 
     if (len(y_in.shape) != 1) or (len(x_in.shape) != 1):
         raise ValueError("deriv:  Inputs not a vector")
     if type(algorithm) != type(''):
         raise ValueError("deriv:  algorithm not str")
-
 
     #- Set algorithm_to_use variable, based on the algorithm keyword.
     #  The algorithm_to_use tells which algorithm below to actually
@@ -173,7 +165,6 @@ def deriv(*positional_inputs, **keyword_inputs):
         algorithm_to_use = 'order1'
     else:
         algorithm_to_use = algorithm
-
 
     #- Change input to MA:  just set to input value unless there are
     #  missing values, in which case add mask:
@@ -185,53 +176,47 @@ def deriv(*positional_inputs, **keyword_inputs):
         x = MA.masked_values(x_in, missing, copy=0)
         y = MA.masked_values(y_in, missing, copy=0)
 
-
     #- Calculate and return derivative:
 
     #  * Create working arrays that are consistent with a 3-point
     #    stencil in the interior and 2-point stencil on the ends:
-    #    *im1 means the point before index i, *ip1 means the point 
-    #    after index i, and the i index array is just plain x or 
+    #    *im1 means the point before index i, *ip1 means the point
+    #    after index i, and the i index array is just plain x or
     #    y; the endpadded arrays replicate the ends of x and y.
     #    I use an MA array filled approach instead of concatentation
     #    because the MA concatenation routine doesn't work right
     #    when the endpoint element is a missing value:
 
-    x_endpadded = MA.zeros(len(x)+2)
-    x_endpadded[0]    = x[0]
-    x_endpadded[1:-1] = x 
-    x_endpadded[-1]   = x[-1]
+    x_endpadded = MA.zeros(len(x) + 2)
+    x_endpadded[0] = x[0]
+    x_endpadded[1:-1] = x
+    x_endpadded[-1] = x[-1]
 
-    y_endpadded = MA.zeros(len(y)+2)
-    y_endpadded[0]    = y[0]
+    y_endpadded = MA.zeros(len(y) + 2)
+    y_endpadded[0] = y[0]
     y_endpadded[1:-1] = y
-    y_endpadded[-1]   = y[-1]
+    y_endpadded[-1] = y[-1]
 
     y_im1 = y_endpadded[:-2]
     y_ip1 = y_endpadded[2:]
     x_im1 = x_endpadded[:-2]
     x_ip1 = x_endpadded[2:]
 
-
     #  * Option 1:  First-order differencing (interior points use
     #    centered differencing, and end points use forward or back-
     #    ward differencing, as applicable):
 
     if algorithm_to_use == 'order1':
-        dydx = (y_ip1 - y_im1) / (x_ip1 - x_im1) 
-
+        dydx = (y_ip1 - y_im1) / (x_ip1 - x_im1)
 
     #  * Option 2:  Bad algorithm specified:
 
     else:
         raise ValueError("deriv:  bad algorithm")
 
-
     #- Return derivative as Numeric array:
 
-    return MA.filled( dydx, missing )
-
-
+    return MA.filled(dydx, missing)
 
 
 #-------------------------- Main:  Test Module -------------------------
@@ -239,7 +224,7 @@ def deriv(*positional_inputs, **keyword_inputs):
 #- Define additional examples for doctest to use:
 
 __test__ = {'Additional Examples':
-    """
+            """
     >>> from deriv import deriv
     >>> import Numeric as N
     >>> y = N.array([3.,4.5])
@@ -264,11 +249,11 @@ if __name__ == "__main__":
     Note:  To help ensure that module testing of this file works, the
     parent directory to the current directory is added to sys.path.
     """
-    import doctest, sys, os
+    import doctest
+    import sys
+    import os
     sys.path.append(os.pardir)
     doctest.testmod(sys.modules[__name__])
-
-
 
 
 # ===== end file =====
