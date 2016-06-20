@@ -1,4 +1,5 @@
-import pyfits as pf
+#import pyfits as pf
+from astropy.io import fits
 import numpy
 import deriv
 from gaussfitter import multigaussfit

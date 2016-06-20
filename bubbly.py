@@ -1,7 +1,8 @@
 import numpy
 import matplotlib.pyplot as plt
 import deriv
-import pyfits as pf
+#import pyfits as pf
+from astropy.io import fits
 import os
 from numpy.ma import median
 from numpy import pi
@@ -24,7 +25,7 @@ for line in in_par_list:
 
 
 # Read data cube and intensity map, if any
-cube_fits = pf.open(in_par['CUBE_NAME'])[0]
+cube_fits = fits.open(in_par['CUBE_NAME'])[0]
 cube = cube_fits.data
 cube_hdr = cube_fits.header
 # eliminate 1d entries (48,1024,1024,1)==> (48,1024,1024)
@@ -34,7 +35,7 @@ hdr_map = header_create(cube_hdr, in_par_list)
 
 if not in_par['RERUN']:
     if in_par['MONO_MAP'] == 1:
-        mono = pf.open(in_par['MONO_NAME'])[0].data
+        mono = fits.open(in_par['MONO_NAME'])[0].data
     else:
         mono = numpy.sum(cube, 0)
 
@@ -146,12 +147,12 @@ if not in_par['RERUN']:
         except:
             os.system('rm multiple_maps/*')
         for component in range(map_number):
-            pf.writeto('multiple_maps/vel' + str(component) + '.fits',
-                       vel_map[component, :, :], hdr_map, clobber=True)
-            pf.writeto('multiple_maps/disp' + str(component) + '.fits',
-                       disp_map[component, :, :], hdr_map, clobber=True)
-            pf.writeto('multiple_maps/mono' + str(component) + '.fits',
-                       mono_map[component, :, :], hdr_map, clobber=True)
+            fits.writeto('multiple_maps/vel' + str(component) + '.fits',
+                         vel_map[component, :, :], hdr_map, clobber=True)
+            fits.writeto('multiple_maps/disp' + str(component) + '.fits',
+                         disp_map[component, :, :], hdr_map, clobber=True)
+            fits.writeto('multiple_maps/mono' + str(component) + '.fits',
+                         mono_map[component, :, :], hdr_map, clobber=True)
 
 
 # BUBBLES
@@ -164,11 +165,11 @@ if in_par['RERUN']:
     mono_map = numpy.zeros([map_number, sizex, sizey])
     disp_map = numpy.zeros([map_number, sizex, sizey])
     for k in numpy.arange(0, map_number):
-        fitk_v = pf.open('multiple_maps/vel' + str(k) + '.fits')
+        fitk_v = fits.open('multiple_maps/vel' + str(k) + '.fits')
         vel_map[k, :, :] = fitk_v[0].data
-        fitk_i = pf.open('multiple_maps/mono' + str(k) + '.fits')
+        fitk_i = fits.open('multiple_maps/mono' + str(k) + '.fits')
         mono_map[k, :, :] = fitk_i[0].data
-        fitk_d = pf.open('multiple_maps/disp' + str(k) + '.fits')
+        fitk_d = fits.open('multiple_maps/disp' + str(k) + '.fits')
         disp_map[k, :, :] = fitk_d[0].data
 
     hdr_prev = fitk_v[0].header
@@ -210,16 +211,16 @@ if in_par['MAIN_OUT'] == 1:
     main_v[mask0] = numpy.nan
     main_i[mask0] = numpy.nan
     main_d[mask0] = numpy.nan
-    pf.writeto('main_v.fits', main_v, hdr_map, clobber=True)
-    pf.writeto('main_d.fits', main_d, hdr_map, clobber=True)
-    pf.writeto('main_i.fits', main_i, hdr_map, clobber=True)
+    fits.writeto('main_v.fits', main_v, hdr_map, clobber=True)
+    fits.writeto('main_d.fits', main_d, hdr_map, clobber=True)
+    fits.writeto('main_i.fits', main_i, hdr_map, clobber=True)
     main_v[mask0] = 0.
     main_i[mask0] = 0.
     main_d[mask0] = 0.
 
 
 if in_par['MAIN_EXT'] == 1:
-    main_v = pf.open(in_par['MAIN_NAME'])[0].data
+    main_v = fits.open(in_par['MAIN_NAME'])[0].data
 
 print('detecting expansion')
 veloff = numpy.array([numpy.subtract(vel_map[k, :, :], main_v)
@@ -318,16 +319,16 @@ for coord in bub:
 
 
 # bubble maps are complete
-pf.writeto('bubble.fits', bubble_map, hdr_map, clobber=True)
-pf.writeto('bubble_int.fits', bubble_intrel_map, hdr_map, clobber=True)
-pf.writeto('bubble_disp.fits', bubble_disp_map, hdr_map, clobber=True)
+fits.writeto('bubble.fits', bubble_map, hdr_map, clobber=True)
+fits.writeto('bubble_int.fits', bubble_intrel_map, hdr_map, clobber=True)
+fits.writeto('bubble_disp.fits', bubble_disp_map, hdr_map, clobber=True)
 
 hdr_map['NAXIS'] = 3
 hdr_map['NAXIS3'] = bubble_sec.shape[0]
 
-pf.writeto('bubble_sec.fits', bubble_sec, hdr_map, clobber=True)
-pf.writeto('bubble_sec_int.fits', bubble_sec_int, hdr_map, clobber=True)
-pf.writeto('bubble_sec_disp.fits', bubble_sec_int, hdr_map, clobber=True)
+fits.writeto('bubble_sec.fits', bubble_sec, hdr_map, clobber=True)
+fits.writeto('bubble_sec_int.fits', bubble_sec_int, hdr_map, clobber=True)
+fits.writeto('bubble_sec_disp.fits', bubble_sec_int, hdr_map, clobber=True)
 
 
 if in_par['PROF_OUT'] == 1:
