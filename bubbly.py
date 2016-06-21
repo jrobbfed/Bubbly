@@ -85,12 +85,17 @@ if not in_par['RERUN']:
             if mask[i, j]:
                 perf = cube[:, i, j]
                 if in_par['CENTERING'] == 1:
-                    print(vel, perf)
                     vel_p, perf_p = line_centering(vel, perf)
                 else:
                     vel_p, perf_p = vel, perf
                 profile_i = profile(vel_p, perf_p)
                 num_zeros = profile_i.get_zeros(SNR_S * spec_noise, 10)
+                print("num_zeros = ", num_zeros)
+                # Getting odd numbers of zeros in many pixel profiles. This
+                # breaks the rest of the code, as we expect true zeros of the 2nd
+                # derivatives to come in pairs. Maybe we need to adjust the SNR
+                # cutoff?
+                break
                 if num_zeros > 1:
                     params, minpars, maxpars = get_pars(
                         profile_i, num_zeros, v_res)

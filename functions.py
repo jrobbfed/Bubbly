@@ -109,6 +109,7 @@ def line_centering(vel, perf):
 # obtain the estimated parameters for the fit, alogn with the lower and
 # upper limits
 def get_pars(profile_i, num_zeros, v_res):
+    print("num_zeros = ", num_zeros)
     params = []
     for zeros in range(num_zeros / 2):
         params.append(profile_i.peak[zeros])
