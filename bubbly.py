@@ -85,6 +85,7 @@ if not in_par['RERUN']:
             if mask[i, j]:
                 perf = cube[:, i, j]
                 if in_par['CENTERING'] == 1:
+                    print(vel, perf)
                     vel_p, perf_p = line_centering(vel, perf)
                 else:
                     vel_p, perf_p = vel, perf

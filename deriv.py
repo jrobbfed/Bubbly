@@ -143,7 +143,7 @@ def deriv(*positional_inputs, **keyword_inputs):
     if ('missing' in keyword_inputs) == 1:
         missing = keyword_inputs['missing']
     else:
-        missing = 1e+20
+        missing = 1e+18
 
     if ('algorithm' in keyword_inputs) == 1:
         algorithm = keyword_inputs['algorithm']

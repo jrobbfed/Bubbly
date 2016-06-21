@@ -1,4 +1,4 @@
-#import pyfits as pf
+# import pyfits as pf
 from astropy.io import fits
 import numpy
 import deriv
@@ -57,8 +57,8 @@ def noise_calculator(cube, hdr_map, in_par):
         if in_par['CONT_OUT']:
             # we add the spectral noise to the calculated continumm as we are
             # biased towards values lower than the real continuum
-            pf.writeto('continuum.fits', zerop +
-                       line_noise, hdr_map, clobber=True)
+            fits.writeto('continuum.fits', zerop +
+                         line_noise, hdr_map, clobber=True)
 
     maxima = numpy.max(cube, 0)
     # we make an additional mask requiring a minimum maximum to noise ratio
@@ -66,7 +66,7 @@ def noise_calculator(cube, hdr_map, in_par):
     # the combination of both masks assures a good SNR as well as masking out
     # emission from stars
     mask_def = mask_ratio * mask_max
-    pf.writeto('mask.fits', mask_def * 1, hdr_map, clobber=True)
+    fits.writeto('mask.fits', mask_def * 1, hdr_map, clobber=True)
     return cube, mask_def, line_noise
 
 
@@ -82,6 +82,7 @@ def line_centering(vel, perf):
     if max_ch < sizez / 2:
         l1 = sizez - sizez / 2 - max_ch
         l2 = max_ch + sizez / 2
+        print(l1, l2, sizez)
         perf2[0:l1] = perf[l2:sizez]
         perf2[l1:sizez] = perf[0:l2]
         vel2[0:l1] = numpy.arange(-l1, 0) * v_res + v0
@@ -262,7 +263,7 @@ def header_create(hdr_cube, in_par_list):  # create an appropiate header for the
     hdr_dict = hdr_cube.ascard
     gen = ['SIMPLE', 'BITPIX', 'NAXIS', 'NAXIS1', 'NAXIS2', 'EXTEND', 'RADESYS', 'CTYPE1', 'CTYPE2', 'CRVAL1',
            'CRVAL2', 'CRPIX1', 'CRPIX2', 'CROTA2', 'CDELT1', 'CDELT2', 'EQUINOX', 'CD1_1', 'CD1_2', 'CD2_1', 'CD2_2']
-    hdr_map = pf.Header()
+    hdr_map = fits.Header()
 
     for key in gen:
         if key in hdr_cube:
@@ -297,7 +298,7 @@ def vel_profile(hdr, sizez, in_par):  # produce a velocity profile from the spec
     v_res = hdr['CDELT3']
 
     if in_par['Z_TYPE'] == 0:
-        if hdr['CTYPE3'] != 'VELOCITY':
+        if hdr['CTYPE3'] != 'VELOCITY' and hdr['CTYPE3'] != 'VELO-LSR':
             print('The spectral direction is not in velocity. Check cube and parameter file to ensure all is correct')
             print('The z-direction is in', hdr['CTYPE3'], hdr['CUNIT3'])
         vel = vel * in_par['VEL_SCALE']
