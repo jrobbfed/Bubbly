@@ -60,6 +60,8 @@ if not in_par['RERUN']:
         print('separating galaxy emission and calculating spectral noise')
         SNR_S = float(in_par['SNR_S'])
         cube, mask, spec_noise = noise_calculator(cube, hdr_map, in_par)
+        if in_par['VERBOSE']:
+          print("Spectral Noise = ", spec_noise)
 
 sizez, sizex, sizey = cube.shape
 
